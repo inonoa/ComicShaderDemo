@@ -10,6 +10,8 @@ public class InsertBuffer : MonoBehaviour
 
     void Start()
     {
+        GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
+
         CommandBuffer buffer = CreateBuffer("Comical");
         SetBlit(buffer, postProcessMat, "PostProcess");
         GetComponent<Camera>().AddCommandBuffer(CameraEvent.BeforeImageEffects, buffer);

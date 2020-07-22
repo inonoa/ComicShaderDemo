@@ -38,13 +38,22 @@
             }
 
             sampler2D _MainTex;
+            sampler2D _CameraDepthTexture;
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
-                // just invert the colors
-                col.rgb = 1 - col.rgb;
-                return col;
+                fixed depth       = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, i.uv));
+                fixed depth_right = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, i.uv + float2(1.0/100, 0)));
+                fixed depth_left  = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, i.uv - float2(1.0/100, 0)));
+                fixed depth_up    = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, i.uv + float2(0, 1.0/100)));
+                fixed depth_down  = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, i.uv - float2(0, 1.0/100)));
+
+                bool isEdge = depth + 0.02 < depth_right
+                            | depth + 0.02 < depth_left
+                            | depth + 0.02 < depth_up
+                            | depth + 0.02 < depth_down;
+
+                return isEdge ? fixed4(0,0,0,1) : tex2D(_MainTex, i.uv);
             }
             ENDCG
         }
