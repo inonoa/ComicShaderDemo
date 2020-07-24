@@ -6,6 +6,7 @@
         _WidthNear ("Width (near)", Float) = 0.01
         _WidthMiddle ("Width (middle)", Float) = 0.003
         _WidthFar ("Width (far)", Float) = 0.001
+        _LineColor("Line Color", Color) = (0,0,0,1)
     }
     SubShader
     {
@@ -45,6 +46,7 @@
             float _WidthNear;
             float _WidthMiddle;
             float _WidthFar;
+            float4 _LineColor;
 
             bool enough_dpt_dist(float depth, float depth2, float depth_threshold){
                 return (depth < depth_threshold) & (depth + 1 < depth2);
@@ -84,7 +86,7 @@
             {
                 bool isEdge_ = (isEdge(_WidthNear, 10, i) | isEdge(_WidthMiddle, 50, i) | isEdge(_WidthFar, 10000, i));
 
-                return isEdge_ ? fixed4(0,0,0,1) : tex2D(_MainTex, i.uv);
+                return isEdge_ ? _LineColor : tex2D(_MainTex, i.uv);
             }
             ENDCG
         }
