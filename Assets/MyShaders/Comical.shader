@@ -67,6 +67,7 @@
                 //UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
                 float3 worldNormal : TEXCOORD1;
+                float4 viewportPos : TEXCOORD2;
             };
 
             sampler2D _MainTex;
@@ -82,14 +83,17 @@
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 //UNITY_TRANSFER_FOG(o,o.vertex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.viewportPos = ComputeScreenPos(o.vertex);
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
+                bool onLine = (((i.viewportPos.x + i.viewportPos.y) / i.viewportPos.w) % 0.01) < 0.0025;
+
                 float4 lightDir = mul(UNITY_MATRIX_M, WorldSpaceLightDir(i.vertex));
                 float luminance = 0.5 + 0.5 * dot(normalize(i.worldNormal), normalize(lightDir.xyz));
-                return luminance > _ShadeThreshold ? _Color : _ShadeColor;
+                return ((luminance < _ShadeThreshold) & onLine) ? fixed4(0,0,0,1) : _Color;
             }
             
             ENDCG
