@@ -4,7 +4,7 @@
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Color ("Color", Color) = (1,1,1,1)
-        _ShadeColor ("Shade Color", Color) = (0, 0, 1, 1)
+        _DotColor("Dot Color", Color) = (0,0,0,1)
         _ShadeThreshold ("Shade Threshold", Range(0, 1)) = 0.2
         _DotDensity ("Dot Density", Int) = 100
         _DotRadius ("Dot Radius", Float) = 0.002
@@ -75,7 +75,7 @@
             sampler2D _MainTex;
             float4 _MainTex_ST;
             float4 _Color;
-            float4 _ShadeColor;
+            float4 _DotColor;
             float _ShadeThreshold;
             int _DotDensity;
             float _DotRadius;
@@ -91,7 +91,7 @@
                 return o;
             }
 
-            bool blackOnTone(v2f i){
+            int blackOnTone(v2f i){
                 float aspect = _ScreenParams.x / _ScreenParams.y;
                 float2 uv_in_screen = float2(
                     (i.viewportPos.x / i.viewportPos.w) * aspect,
@@ -101,7 +101,10 @@
                 float distanceFromDot2 = 
                       pow((dot2dot / 2.0) - abs((uv_in_screen.x % dot2dot) - (dot2dot / 2.0)), 2)
                     + pow((dot2dot / 2.0) - abs((uv_in_screen.y % dot2dot) - (dot2dot / 2.0)), 2);
-                return (distanceFromDot2 <= _DotRadius * _DotRadius);
+                int ans = -1;
+                ans += (distanceFromDot2 <= _DotRadius * _DotRadius * 1.4);
+                ans += (distanceFromDot2 <= _DotRadius * _DotRadius * 0.6);
+                return ans;
             }
 
             fixed4 frag (v2f i) : SV_Target
@@ -109,7 +112,11 @@
 
                 float4 lightDir = mul(UNITY_MATRIX_M, WorldSpaceLightDir(i.vertex));
                 float luminance = 0.5 + 0.5 * dot(normalize(i.worldNormal), normalize(lightDir.xyz));
-                return ((luminance < _ShadeThreshold) & blackOnTone(i)) ? fixed4(0,0,0,1) : _Color;
+
+                int bl = blackOnTone(i);
+                float4 midcol = (_DotColor + _Color) / 2.0;
+
+                return ((luminance < _ShadeThreshold) & bl > -1) ? (bl > 0 ? _DotColor : midcol) : _Color;
             }
             
             ENDCG
