@@ -83,9 +83,24 @@
                        | enough_dpt_dist(depth_dr, depth, depth_threshold);
             }
 
+            float3 sampleNormalNormal(float2 uv){
+                return normalize(tex2D(_CameraDepthNormalsTexture, uv).rgb * 2 - float3(1,1,1));
+            }
+
             fixed4 frag (v2f i) : SV_Target
             {
-                return tex2D(_CameraDepthNormalsTexture, i.uv);
+                float3 normal = sampleNormalNormal(i.uv);
+
+                float3 normal_r = sampleNormalNormal(i.uv + float2(0.001, 0));
+                float difr = dot(normal, normal_r) * 0.5 + 0.5;
+                float3 normal_l = sampleNormalNormal(i.uv + float2(-0.001, 0));
+                float difl = dot(normal, normal_r) * 0.5 + 0.5;
+                float3 normal_u = sampleNormalNormal(i.uv + float2(0, 0.001));
+                float difu = dot(normal, normal_r) * 0.5 + 0.5;
+                float3 normal_d = sampleNormalNormal(i.uv + float2(0, -0.001));
+                float difd = dot(normal, normal_r) * 0.5 + 0.5;
+
+                return float4(1,1,1,1) * (4 - (difr + difl + difu + difd)) * 20;
 
                 bool isEdge_ = (isEdge(_WidthNear, 10, i) | isEdge(_WidthMiddle, 50, i) | isEdge(_WidthFar, 10000, i));
 
