@@ -1,4 +1,4 @@
-﻿Shader "CustomPostProcess/Post"
+﻿Shader "CustomPostProcess/NormalEdge"
 {
     Properties
     {
@@ -43,6 +43,7 @@
 
             sampler2D _MainTex;
             sampler2D _CameraDepthTexture;
+            sampler2D _CameraDepthNormalsTexture;
             float _WidthNear;
             float _WidthMiddle;
             float _WidthFar;
@@ -84,6 +85,8 @@
 
             fixed4 frag (v2f i) : SV_Target
             {
+                return tex2D(_CameraDepthNormalsTexture, i.uv);
+
                 bool isEdge_ = (isEdge(_WidthNear, 10, i) | isEdge(_WidthMiddle, 50, i) | isEdge(_WidthFar, 10000, i));
 
                 return isEdge_ ? _LineColor : tex2D(_MainTex, i.uv);

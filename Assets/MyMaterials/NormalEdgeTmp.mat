@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Comical
-  m_Shader: {fileID: 4800000, guid: afa8549b2a63eeb4ca55aedb0ce33fbc, type: 3}
+  m_Name: NormalEdgeTmp
+  m_Shader: {fileID: 4800000, guid: d325daea74d45d347a0edb99613c2ba5, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -59,8 +59,6 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DotDensity: 200
-    - _DotRadius: 0.0015
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -69,14 +67,15 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ShadeThreshold: 0.785
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
+    - _WidthFar: 0.001
+    - _WidthMiddle: 0.003
+    - _WidthNear: 0.01
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.7732332, g: 0.8396226, b: 0.74853146, a: 1}
-    - _DotColor: {r: 0.03921568, g: 0.14901961, b: 0.055858016, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ShadeColor: {r: 0.49088275, g: 0.46666667, b: 0.7529412, a: 1}
+    - _LineColor: {r: 0, g: 0, b: 0, a: 1}

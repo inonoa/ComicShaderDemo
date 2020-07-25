@@ -6,15 +6,24 @@ using UnityEngine.Rendering;
 
 public class InsertBuffer : MonoBehaviour
 {
-    [SerializeField] Material postProcessMat;
+    [SerializeField] Material[] postProcessMats;
+    new Camera camera;
 
     void Start()
     {
-        GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
+        camera = GetComponent<Camera>();
+        camera.depthTextureMode |= DepthTextureMode.Depth;
+        camera.depthTextureMode |= DepthTextureMode.DepthNormals;
 
-        CommandBuffer buffer = CreateBuffer("Comical");
-        SetBlit(buffer, postProcessMat, "PostProcess");
-        GetComponent<Camera>().AddCommandBuffer(CameraEvent.BeforeImageEffects, buffer);
+        foreach(Material mat in postProcessMats){
+            InsertPostProcess(mat, mat.name);
+        }
+    }
+
+    void InsertPostProcess(Material material, string name){
+        CommandBuffer buffer = CreateBuffer(name);
+        SetBlit(buffer, material, name);
+        camera.AddCommandBuffer(CameraEvent.BeforeImageEffects, buffer);
     }
 
     CommandBuffer CreateBuffer(string name){
