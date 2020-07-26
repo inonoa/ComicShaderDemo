@@ -49,7 +49,7 @@
             float4 _LineColor;
 
             bool enough_dpt_dist(float depth, float depth2, float depth_threshold){
-                return (depth < depth_threshold) & (depth + 1 < depth2);
+                return (depth < depth_threshold) & (depth + 0.3 < depth2);
             }
 
             float sampleLinearDepth(float2 uv){
@@ -79,7 +79,9 @@
                        | enough_dpt_dist(depth__l, depth, depth_threshold)
                        | enough_dpt_dist(depth_dl, depth, depth_threshold)
                        | enough_dpt_dist(depth_d_, depth, depth_threshold)
-                       | enough_dpt_dist(depth_dr, depth, depth_threshold);
+                       | enough_dpt_dist(depth_dr, depth, depth_threshold)
+                       ;
+
             }
 
             fixed4 frag (v2f i) : SV_Target

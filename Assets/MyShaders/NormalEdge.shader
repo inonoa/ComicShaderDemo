@@ -92,19 +92,20 @@
                 float3 normal = sampleNormalNormal(i.uv);
 
                 float3 normal_r = sampleNormalNormal(i.uv + float2(0.001, 0));
-                float difr = dot(normal, normal_r) * 0.5 + 0.5;
+                float difr = - dot(normal, normal_r) * 0.5 + 0.5;
                 float3 normal_l = sampleNormalNormal(i.uv + float2(-0.001, 0));
-                float difl = dot(normal, normal_r) * 0.5 + 0.5;
+                float difl = - dot(normal, normal_r) * 0.5 + 0.5;
                 float3 normal_u = sampleNormalNormal(i.uv + float2(0, 0.001));
-                float difu = dot(normal, normal_r) * 0.5 + 0.5;
+                float difu = - dot(normal, normal_r) * 0.5 + 0.5;
                 float3 normal_d = sampleNormalNormal(i.uv + float2(0, -0.001));
-                float difd = dot(normal, normal_r) * 0.5 + 0.5;
+                float difd = - dot(normal, normal_r) * 0.5 + 0.5;
 
-                return float4(1,1,1,1) * (4 - (difr + difl + difu + difd)) * 20;
+                bool isEdge = difr + difl + difu + difd > 0.2;
+                return isEdge ? _LineColor : tex2D(_MainTex, i.uv);
 
-                bool isEdge_ = (isEdge(_WidthNear, 10, i) | isEdge(_WidthMiddle, 50, i) | isEdge(_WidthFar, 10000, i));
+                //bool isEdge_ = (isEdge(_WidthNear, 10, i) | isEdge(_WidthMiddle, 50, i) | isEdge(_WidthFar, 10000, i));
 
-                return isEdge_ ? _LineColor : tex2D(_MainTex, i.uv);
+                //return isEdge_ ? _LineColor : tex2D(_MainTex, i.uv);
             }
             ENDCG
         }
